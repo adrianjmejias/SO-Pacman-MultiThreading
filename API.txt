@@ -1,0 +1,151 @@
+/*
+Estructura de datos del tipo cola que se encarga de almacenar procesos
+*/
+#ifndef HCOLA_PROCESOS
+#define HCOLA_PROCESOS
+#include <stdlib.h>
+#include "Defines.h"
+#include "Proceso.h"
+
+typedef Proceso *Data;
+
+typedef struct Nodo
+{
+	Data data;
+	struct Nodo *next;
+} Nodo;
+
+typedef struct Cola_Procesos
+{
+	int quantum;
+	Nodo *first;
+	Nodo *last;
+	int size;
+} Cola_Procesos;
+
+Cola_Procesos *New_Cola_Proceso();
+bool Cola_Empty(Cola_Procesos *);
+void Cola_Delete(Cola_Procesos *);
+void Cola_Push(Cola_Procesos *, Data);
+Data Cola_Pop(Cola_Procesos *);
+Data Cola_Front(Cola_Procesos *);
+Data Cola_Back(Cola_Procesos *);
+//int Cola_Size(Cola_Procesos *);
+
+#endif //HCOLA_PROCESOS#ifndef HDEFINES
+#define HDEFINES
+#include "Funciones.h"
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define p(msg) printf("%s\n", msg)
+#define MAYOR(procesoa, procesob) procesoa < procesob
+#define MENOR(procesoa, procesob) procesoa > procesob
+#define IGUAL(procesoa, procesob) procesoa == procesob
+#define MOSTRAR_ESTADO_PROCESO(proc, estado_proceso) printf("El proceso %d esta %s\n", proc, estado_proceso)
+#define REDUCIR_PRI(a) a = (MAYOR(a, MIN_PRI)) ? a + 1 : a
+#define TERMINO_QUATUM(tiempo_ejec, quatum) tiempo_ejec % quatum == 0
+
+//En cuanto a cantidades
+#define NUM_RECURSOS 4
+#define NUM_COLAS 5
+
+// En cuanto a recursos
+#define IMPRESORA 0
+#define SCANNER 1
+#define MODEM 2
+#define DVD 3
+
+//En cuanto a colas
+#define NINGUNO 1 << 30 //pongo un numero alto para que tenga la menor prioridad
+// si coloco esto como un enum seria mucho mas claro pero hay que cambiar el tipo de dato
+// de prioridad en todos lados
+typedef enum {REAL, PRI_1, PRI_2, PRI_3} Prioridad;
+Prioridad prioridad = REAL; tampoco estoy claro si le puedo hacer ++ a eso, creo que sì
+#define REAL 0
+#define PRI_1 REAL + 1
+#define PRI_2 PRI_1 + 1
+#define PRI_3 PRI_2 + 1
+#define BLOQUEO PRI_3 + 1
+#define MIN_PRI PRI_3
+#define MAX_PRI REAL
+#define T_MAX 20
+#define MAX_INT 1 << 30
+
+//Implementación de booleano
+typedef int bool;
+#define true 1
+#define false 0
+
+#endif //HDEFINES#ifndef HDESPACHADOR
+#define HDESPACHADOR
+#include "Cola_Procesos.h"
+#include "Proceso.h"
+#include "Defines.h"
+
+typedef struct Despachador
+{
+	int quantum;
+	Proceso *proceso_en_cpu;
+	int prioridad_en_cpu;
+	Cola_Procesos cola[NUM_COLAS];
+	int recurso[NUM_RECURSOS];
+} Despachador;
+
+Despachador *New_Despachador(int, int, int, int);
+void Inicializar_Tamanio(Despachador *);
+void Despachador_Delete(Despachador *);
+bool Despachador_Empty(Despachador *);
+void CPU_Planificar(Despachador *, int);
+Cola_Procesos *Leer_Lista_Procesos(const char *);
+void Despachador_Push(Despachador *, Proceso *);
+
+//Miscelaneous
+void CPU_Asignar(Despachador *, Proceso *);
+void CPU_Liberar(Despachador *);
+void Set_Quantum(Despachador *);
+
+//Operaciones sobre los recursos
+void Recursos_Asignar(Despachador *, Proceso *);
+void Recursos_Liberar(Despachador *, Proceso *);
+bool Recursos_Verificar(Despachador *, Proceso *);
+bool Tiempo_Verificar(Despachador *);
+
+//Acciones del despachador sobre los procesos
+void Proceso_Iniciar(Despachador *);
+void Proceso_Suspender(Despachador *);
+void Proceso_Ejecutar(Despachador *);
+void Proceso_Matar(Despachador *);
+void Proceso_Reanudar(Despachador *);
+void Proceso_Sacar(Despachador *);
+
+#endif //HDESPACHADOR#ifndef HFUNCIONES
+#define HFUNCIONES
+#include <stdio.h>
+#define MIN(a, b) (a < b) ? a : b
+#define MAX(a, b) (a > b) ? a : b
+
+int Suma(int, int);
+int Resta(int, int);
+void Actualizar_Arreglo(int *, int *, int, int, int (*operacion)(int, int));
+void Print_Arreglo(int *, int);
+#endif //HFUNCIONES#ifndef HPROCESO
+#define HPROCESO
+#include <unistd.h> //pid_t
+#include "Defines.h"
+
+typedef struct Proceso
+{
+	pid_t pid;
+	int t_ejecucion;
+	int t_llegada;
+	int t_restante;
+	int prioridad;
+	int recurso_necesario[NUM_RECURSOS];
+	bool es_nuevo;
+} Proceso;
+
+Proceso *New_Proceso(int, int, int, int, int, int, int);
+void Proceso_Print(Proceso *);
+
+#endif //HPROCESO

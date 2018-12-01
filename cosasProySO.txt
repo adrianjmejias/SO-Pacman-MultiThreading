@@ -1,0 +1,81 @@
+PREGUNTAS:
+
+*Se permite ejecutar un proceso en tiempo real hasta que haya expirado su 
+empo o cuando el despachador lo mate envi�ndole una se�al SIGINT. �Cuando pasa esto?
+
+* El  trabajo del Usuario no 
+debe suspenderse y moverse a un nivel de prioridad menor a menos que 
+otro proceso est� esperando ser iniciado. �eh?
+
+*Las se�ales hay que hacerlas o simularlas?
+
+*por ahora la �nica forma de que bajes de prioridad es que el despachador te suspenda
+
+*Se puede hacer esto?:
+le tendr�amos que restar a los recursos disponibles apenas el proceso pase de la cola usuario a alguna cola de prioridad
+y se le volver�an a sumar una vez se haya ejecutado por completo
+
+*el segudno me imagino que es con el sleep
+me imagino que cuando hacemos ejecutar
+el pana hace un fork o exec que espera
+*Como modelamos el tiempo en general? (ya qu eclaor necesimatoms estar consientes del tiempo actual para saber en que moento van llegando los procesos)
+Habia pensado en algo as� (pseudoc�digo):
+procedure Ejecuci�n_Proceso()
+{
+	imprimir_datos_proc();
+	exec();//Supongo que es con el child.c(???
+	sleep(1);
+	tiempo_general++;
+	bool seguimos = revisar_colas(); //false -> entrar� un 					proceso de prioridad 0 
+	if(!seguimos)
+	{
+		suspender_proceso();
+		imprimir_mensaje(suspension);
+		despachador_trabaja();
+		return;
+	}
+	
+	if(termino()) imprimir_mensaje(termino);
+	else imprimir_mensaje(continuar);
+}
+
+}
+�O tiene algo que ver con el child.c?
+
+
+RECORDATORIOS:
+* Despachador: es un struct donde est�n las colas, y que tiene el poder de suspender procesos, de interrumpir, y bloquear a todos los procesos, y ejecutar.
+
+* Es cuando estas en COLA_USUARIO y pasas a alguna cola de prioridad te dan los recursos y los liberas cuando te mueres.
+
+* Condiciones para estar en la cola respectiva (para los usuarios)
+1) tiempo_general >= tiempo_llegada
+2) que los recursos disponibles sean mayores o iguales a los recursos que necesita el proceso que se est� evaluando
+
+(para los p 0)
+1) tiempo_general >= tiempo_llegada, y existir
+
+* Condiciones para suspender un proceso 
+1) Entra un proceso de prioridad 0
+* Que le pasa un proceso suspendido:
+1) Seejectua un ciclo mas (+)
+2) Bajarle la prioridad 
+3) Encolarlo donde corresponda
+
++ Se permite que un trabajo de usuario de baja prioridad se ejecute un segundo del despachador 
+antes de que se suspenda (SIGSTOP) o finalice (SIGINT) si ha expirado el tiempo.
+
+Yuli:
+colas_proceso
+despachador
+
+Adri:
+procesos, exec()
+
+no hay que poner procesos nope? 
+
+si p1 llega en 0 y se ejecuta por 2 segs, y p2 llega en 3, el segundo 2 queda sin hacer nada
+
+p2           X X
+p1     X X
+tiempo 0 1 2 3 4 5

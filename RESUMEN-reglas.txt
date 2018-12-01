@@ -1,0 +1,79 @@
+RESUMEN reglas de paja
+--
+nombres significativos para las variables y menos de 20 letras,
+--
+variables_asi
+--
+funciones son verbos en infinitivos y si retornan deben hacer referencia al valor en el nombre de la variable de retorno
+--
+iteradores ii, jj , kk
+--
+sin acentos porque explota todo
+--
+no poner numeritos y cadenas sin significados, hacer constantes para poder identificarlas mejor ej 3.1416 podemos hacer un #define PI 3.1416
+--
+CONSTANTES_ASI
+--
+no es necesario constantes por lo menos para los meses del año porque "son conocidos y obvios"
+--
+comentarios
+>al principio del programa
+>loops complejos
+>if, switchs complejos
+>declaracion de constantes y varialbes que el nombre no sea lo suficientemente claro
+>cierres de bloques } poner comentarios 
+ej 
+} // fin if var=0
+o también puede ser
+} //fin while lectura
+--
+poner comentarios para las funciones que el nombre no sea suficiente para explicarla, y explicar en esos comentarios lo
+ uqe hace la funcion, la utilidad de los parámetros y el valor de retorno, también los requisitos para llamar una función
+--
+no se deben escribir lineas muy largas 
+--
+las funciones con pocas lineas (incluyendo el main si se puede)
+--
+divide y venceras
+--
+usar parentesis en las expresiones para aumentar claridad
+(He says in parentheses) (8)
+--
+cada bloque de código importante se separa de los demás por una linea en blanco
+--
+ poner linea de asteriscos entre definiciones de funciones para poder diferenciar las implementaciones
+ /******************************/
+--
+no usar goto a menos que estemos metidos dentro de 8for y 4 if que estemos demasiado jodidos y los break no nos ayuden
+--
+continue, return y exit() existen para salir de los peos que mencione en el punto anterior
+poner un comentario explicando su uso
+--
+
+~
+el ejemplo pa los requisitos que se me ocurrio es maybe hacer un wait (?)
+~
+
+estructura del programa
+1- comentarios
+2- includes < >
+3- includes " "
+4- variables globales y globales extern
+5- constantes y macros
+6- typedefs
+7- prototipos de funciones
+8- declaracion variables globales 
+9- implementacion de funciones
+
+--
+no usar nunca variables globales
+--
+no usar nunca variables globales parte 2
+--
+evitar los pases por referencia
+-- 
+poner los corchetes asi
+if () {
+} else {
+}
+--
